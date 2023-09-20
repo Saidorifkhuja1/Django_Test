@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Статистика по продуктам</title>
+</head>
+<body>
+    <h1>Статистика по продуктам</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Название продукта</th>
+                <th>Количество просмотренных уроков</th>
+                <th>Общее время просмотра (секунды)</th>
+                <th>Количество учеников</th>
+                <th>Процент приобретения</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.num_viewed_lessons }}</td>
+                    <td>{{ product.total_view_time }}</td>
+                    <td>{{ product.num_students }}</td>
+                    <td>{{ product.purchase_percentage }}%</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

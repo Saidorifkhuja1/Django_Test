@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список уроков</title>
+</head>
+<body>
+    <h1>Список уроков для продукта "{{ product.name }}"</h1>
+    <ul>
+        {% for access in product_access %}
+            <li>{{ access.lesson.name }} - {{ access.view_time_seconds }} секунд (Просмотрено: {{ access.viewed }})</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
