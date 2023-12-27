@@ -1,10 +1,13 @@
+
 from django.db import models
+
+
 # class Product(models.Model):
 #     name = models.CharField(max_length=255)
 #     product_access = models.ForeignKey('ProductAccess', on_delete=models.CASCADE)
 class Product(models.Model):
     name = models.CharField(max_length=255)
-    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    owner = models.ForeignKey("auth.User", on_delete=models.CASCADE)
 
 class Lesson(models.Model):
     name = models.CharField(max_length=255)
@@ -18,4 +21,5 @@ class ProductAccess(models.Model):
     last_accessed = models.DateTimeField(null=True, blank=True)
     viewed = models.BooleanField(default=False)
     view_time_seconds = models.PositiveIntegerField(default=0)
+
 

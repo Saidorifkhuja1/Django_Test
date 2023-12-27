@@ -1,11 +1,12 @@
 from django.contrib.auth.models import User
 from rest_framework import generics
-from django.db.models import Sum
 from .models import Product, Lesson, ProductAccess
 from .serializers import LessonSerializer, ProductAccessSerializer
-from django.views.generic import View
-from django.shortcuts import render
 from django.views.generic.base import TemplateView
+from django.db.models import Count, Sum
+from django.db.models import Q
+from django.views import View
+from django.shortcuts import render
 
 
 class HomeView(TemplateView):
@@ -44,16 +45,26 @@ class ListProductLessonsView(generics.ListAPIView):
 
 
 
+#
+# class ProductStatsView(View):
+#     def get(self, request, *args, **kwargs):
+#         products = Product.objects.all()
+#         for product in products:
+#             product.num_viewed_lessons = product.lessons.filter(productaccess__viewed=True).count()
+#             product.total_view_time = product.productaccess.aggregate(total_time=Sum('view_time_seconds'))['total_time']
+#             product.num_students = product.productaccess.values('user').distinct().count()
+#             total_users = User.objects.count()
+#             product.purchase_percentage = (product.productaccess.count() / total_users) * 100
+#         return render(request, 'product_stats.html', {'products': products})
+
 
 class ProductStatsView(View):
     def get(self, request, *args, **kwargs):
-        products = Product.objects.all()
-        for product in products:
-            product.num_viewed_lessons = product.lessons.filter(productaccess__viewed=True).count()
-            product.total_view_time = product.productaccess.aggregate(total_time=Sum('view_time_seconds'))['total_time']
-            product.num_students = product.productaccess.values('user').distinct().count()
-            total_users = User.objects.count()
-            product.purchase_percentage = (product.productaccess.count() / total_users) * 100
+        products = Product.objects.annotate(
+            num_viewed_lessons=Count('lessons', filter=Q(lessons__productaccess__viewed=True)),
+            total_view_time=Sum('productaccess__view_time_seconds'),
+            num_students=Count('productaccess__user', distinct=True),
+            purchase_percentage=(Count('productaccess', distinct=True) / User.objects.count()) * 100
+        )
+
         return render(request, 'product_stats.html', {'products': products})
-
-
